@@ -439,6 +439,7 @@ button { font-family: inherit; cursor: pointer; }
   text-overflow: ellipsis;
 }
 .leaderboard-row .lb-bar-track {
+  display: block;
   flex: 1;
   background: var(--paper);
   border-radius: 999px;
@@ -447,7 +448,9 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--line);
 }
 .leaderboard-row .lb-bar-fill {
+  display: block;
   height: 100%;
+  min-width: 3px;
   background: linear-gradient(90deg, var(--mint), var(--pine));
   border-radius: 999px;
   transition: width 0.3s ease;
