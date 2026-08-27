@@ -1,0 +1,12 @@
+{
+  "name": "fitbuddy",
+  "version": "1.0.0",
+  "private": true,
+  "description": "친구들과 함께 운동 출석과 식단을 기록하는 웹앱 (Netlify Functions + Blobs)",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^2.8.2"
+  }
+}

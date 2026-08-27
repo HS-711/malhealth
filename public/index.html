@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>루틴메이트 · 운동 출석 &amp; 식단 기록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- 로그인 / 회원가입 화면 -->
+<section id="auth-screen" class="screen">
+  <div class="auth-card">
+    <p class="eyebrow">RoutineMate</p>
+    <h1 class="brand">루틴메이트</h1>
+    <p class="sub">친구들과 함께 운동 출석과 하루 세끼 식단을 기록해요.</p>
+
+    <div class="tabbar" role="tablist">
+      <button class="tab-btn active" data-target="login-form" type="button">로그인</button>
+      <button class="tab-btn" data-target="register-form" type="button">회원가입</button>
+    </div>
+
+    <form id="login-form" class="auth-form">
+      <label>아이디
+        <input type="text" name="username" autocomplete="username" required />
+      </label>
+      <label>비밀번호
+        <input type="password" name="password" autocomplete="current-password" required />
+      </label>
+      <button type="submit" class="btn primary">로그인</button>
+      <p class="form-msg" data-msg-for="login-form"></p>
+    </form>
+
+    <form id="register-form" class="auth-form hidden">
+      <label>아이디 <span class="hint">(영문 소문자/숫자, 3~20자)</span>
+        <input type="text" name="username" autocomplete="username" required pattern="[a-z0-9_-]{3,20}" />
+      </label>
+      <label>닉네임
+        <input type="text" name="displayName" autocomplete="nickname" placeholder="친구들에게 보일 이름" />
+      </label>
+      <label>비밀번호 <span class="hint">(4자 이상)</span>
+        <input type="password" name="password" autocomplete="new-password" required minlength="4" />
+      </label>
+      <button type="submit" class="btn primary">회원가입 후 시작하기</button>
+      <p class="form-msg" data-msg-for="register-form"></p>
+    </form>
+  </div>
+</section>
+
+<!-- 메인 앱 화면 -->
+<section id="app-screen" class="screen hidden">
+  <header class="app-header">
+    <div>
+      <p class="eyebrow">RoutineMate</p>
+      <h1 class="brand small">루틴메이트</h1>
+    </div>
+    <div class="header-right">
+      <span id="me-name" class="me-name"></span>
+      <button id="profile-btn" class="btn ghost small" type="button">프로필</button>
+      <button id="logout-btn" class="btn ghost small" type="button">로그아웃</button>
+    </div>
+  </header>
+
+  <!-- 프로필 수정 모달 -->
+  <div id="profile-modal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>프로필 설정</h2>
+        <button id="profile-close" class="icon-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <form id="profile-form" class="auth-form">
+        <label>닉네임
+          <input type="text" name="displayName" maxlength="30" required />
+        </label>
+
+        <hr class="divider" />
+
+        <p class="section-label">비밀번호 변경 <span class="hint">(변경할 때만 입력)</span></p>
+        <label>현재 비밀번호
+          <input type="password" name="currentPassword" autocomplete="current-password" />
+        </label>
+        <label>새 비밀번호 <span class="hint">(4자 이상)</span>
+          <input type="password" name="newPassword" autocomplete="new-password" minlength="4" />
+        </label>
+
+        <button type="submit" class="btn primary">저장</button>
+        <p class="form-msg" data-msg-for="profile-form"></p>
+      </form>
+    </div>
+  </div>
+
+  <nav class="date-nav">
+    <button id="date-prev" class="icon-btn" type="button" aria-label="이전 날짜">‹</button>
+    <input id="date-input" type="date" />
+    <button id="date-next" class="icon-btn" type="button" aria-label="다음 날짜">›</button>
+    <button id="date-today" class="btn ghost small" type="button">오늘</button>
+  </nav>
+
+  <nav class="tabbar main-tabbar" role="tablist">
+    <button class="tab-btn active" data-panel="panel-attendance" type="button">🏋️ 운동 출석</button>
+    <button class="tab-btn" data-panel="panel-diet" type="button">🍚 식단 기록</button>
+    <button class="tab-btn" data-panel="panel-summary" type="button">📊 요약</button>
+  </nav>
+
+  <!-- 운동 출석 패널 -->
+  <section id="panel-attendance" class="panel">
+    <div class="streak-card">
+      <p class="streak-label">이번 주 내 출석</p>
+      <div id="streak-strip" class="streak-strip"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2>이번 주 운동 횟수 비교</h2>
+      </div>
+      <div id="leaderboard" class="leaderboard"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2>오늘의 인증샷 <span class="hint">(선택)</span></h2>
+      </div>
+      <div id="photo-widget" class="photo-widget"></div>
+      <input id="photo-input" type="file" accept="image/*" capture="environment" class="hidden" />
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2>친구들 출석 현황</h2>
+        <span id="attendance-date-label" class="date-label"></span>
+      </div>
+      <ul id="attendance-list" class="member-list"></ul>
+      <p id="attendance-empty" class="empty-msg hidden">등록된 친구가 없어요. 회원가입 후 다시 확인해보세요.</p>
+    </div>
+  </section>
+
+  <!-- 사진 크게 보기 모달 -->
+  <div id="photo-modal" class="modal-overlay hidden">
+    <div class="modal-card photo-modal-card">
+      <div class="modal-head">
+        <h2 id="photo-modal-title">인증샷</h2>
+        <button id="photo-modal-close" class="icon-btn" type="button" aria-label="닫기">✕</button>
+      </div>
+      <img id="photo-modal-img" alt="인증샷" />
+    </div>
+  </div>
+
+  <!-- 식단 기록 패널 -->
+  <section id="panel-diet" class="panel hidden">
+    <div class="card">
+      <div class="card-title-row">
+        <h2>오늘 식단 자가 점검</h2>
+      </div>
+      <div id="diet-score-widget" class="diet-score-widget"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2>내 식단 입력</h2>
+        <span id="diet-date-label" class="date-label"></span>
+      </div>
+      <div id="meal-forms" class="meal-forms"></div>
+    </div>
+
+    <div class="card">
+      <h2>친구들 식단</h2>
+      <div id="diet-board" class="diet-board"></div>
+      <p id="diet-empty" class="empty-msg hidden">아직 기록된 식단이 없어요.</p>
+    </div>
+  </section>
+
+  <!-- 요약 패널 -->
+  <section id="panel-summary" class="panel hidden">
+    <div class="tabbar range-toggle" role="tablist">
+      <button class="tab-btn active" data-range="week" type="button">이번 주</button>
+      <button class="tab-btn" data-range="month" type="button">이번 달</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title-row">
+        <h2>내 요약</h2>
+        <span id="summary-range-label" class="date-label"></span>
+      </div>
+      <div id="my-summary-stats" class="summary-stats"></div>
+    </div>
+
+    <div id="summary-badges-card" class="card hidden">
+      <h2>🏆 이 기간의 주인공</h2>
+      <div id="summary-badges" class="badge-row"></div>
+    </div>
+
+    <div class="card">
+      <h2>출석 랭킹</h2>
+      <div id="summary-attendance-rank" class="leaderboard"></div>
+    </div>
+
+    <div class="card">
+      <h2>평균 식단 점수 랭킹</h2>
+      <div id="summary-score-rank" class="leaderboard"></div>
+      <p id="summary-score-empty" class="empty-msg hidden">아직 아무도 식단 점수를 매기지 않았어요.</p>
+    </div>
+  </section>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>
